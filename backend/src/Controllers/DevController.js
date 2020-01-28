@@ -1,6 +1,7 @@
 const axios = require('axios')
 const Dev = require('../Models/Dev')
 const parseStringArray = require('../utils/parseStringArray')
+const {findConnections,sendMessage} = require('../websocket')
 
 module.exports = {
    async index(req,res){
@@ -30,10 +31,14 @@ module.exports = {
             techs:techsArray,
             location,
          })
-         return res.json(dev)
+         const sendSocketMessageTo = findConnections(
+            {latitude,longitude},
+            techsArray,
+         )
+         sendMessage(sendSocketMessageTo,'new-dev'.dev)
+         
       }
-      
-      return res.send('ja cadastrado')
+      return res.json(dev)
       
    }
 }
